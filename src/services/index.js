@@ -36,15 +36,17 @@ export const getAccessToken = async () => {
  * 获取天气情况
  * @param {*} province 省份
  * @param {*} city 城市
+ * @param timestamp 时间戳
  */
-export const getWeather = async (province, city) => {
+export const getWeather = async (province, city, timestamp) => {
   if (!CITY_INFO[province] || !CITY_INFO[province][city] || !CITY_INFO[province][city]["AREAID"]) {
     console.error('配置文件中找不到相应的省份或城市')
     return null
   }
   const address = CITY_INFO[province][city]["AREAID"]
 
-  const url = `http://d1.weather.com.cn/dingzhi/${address}.html?_=${dayjs().valueOf()}`
+  const url = `http://d1.weather.com.cn/dingzhi/${address}.html?_=${timestamp || dayjs().valueOf()}`
+  console.log(url)
 
   const res = await axios.get(url, {
     headers: {
@@ -78,7 +80,7 @@ export const getWeather = async (province, city) => {
 
 /**
  * 金山词霸每日一句
- * @returns 
+ * @returns
  */
 export const getCIBA = async () => {
   const url = 'http://open.iciba.com/dsapi/'
@@ -98,8 +100,8 @@ export const getCIBA = async () => {
 
 /**
  * 每日一言
- * @param {*} type 
- * @returns 
+ * @param {*} type
+ * @returns
  */
 export const getOneTalk = async (type) => {
 
@@ -120,7 +122,7 @@ export const getOneTalk = async (type) => {
 
 /**
  * 获取重要节日信息
- * @returns 
+ * @returns
  */
 export const getBirthdayMessage = () => {
   // 计算重要节日倒数
@@ -139,7 +141,7 @@ export const getBirthdayMessage = () => {
       if (item.type === '生日') {
         // 获取周岁
         const age = dayjs().diff(item.year + '-' + item.date, 'year');
-  
+
         if (item.diffDay === 0) {
           message = `今天是 ${item.name} 的${age ? age + '岁' : ''}生日哦，祝${item.name}生日快乐！`
         } else {
@@ -169,42 +171,12 @@ export const getBirthdayMessage = () => {
 }
 
 /**
- * 计算每个重要日子的日期差
- * @returns 
- */
-export const getDateDiffList = () => {
-  const dateList = config.CUSTOMIZED_DATE_LIST
-  
-  dateList.forEach(item => {
-    item['diffDay'] = Math.floor(dayjs().diff(dayjs(item.date), 'day', true))
-  })
-
-  return dateList
-}
-
-export const getSlotList = () => {
-  const slotList = config.SLOT_LIST
-
-  slotList.forEach(item => {
-    if (Object.prototype.toString.call(item.contents) === '[object Array]' && item.contents.length > 0) {
-      item['checkout'] = item.contents[Math.floor(Math.random() * item.contents.length + 1) - 1]
-    } else if (Object.prototype.toString.call(item.contents) === '[object String]') {
-      item['checkout'] = item.contents
-    } else {
-      item['checkout'] = ''
-    }
-  })
-
-  return slotList
-}
-
-/**
  * 发送消息模板
- * @param {*} templateId 
- * @param {*} user 
- * @param {*} accessToken 
- * @param {*} params 
- * @returns 
+ * @param {*} templateId
+ * @param {*} user
+ * @param {*} accessToken
+ * @param {*} params
+ * @returns
  */
 export const sendMessage = async (templateId, user, accessToken, params) => {
   const url = `https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=${accessToken}`
@@ -253,11 +225,11 @@ export const sendMessage = async (templateId, user, accessToken, params) => {
 
 /**
  * 推送消息, 进行成功失败统计
- * @param {*} templateId 
- * @param {*} users 
- * @param {*} accessToken 
- * @param {*} params 
- * @returns 
+ * @param {*} templateId
+ * @param {*} users
+ * @param {*} accessToken
+ * @param {*} params
+ * @returns
  */
 export const sendMessageReply = async (templateId, users, accessToken, params) => {
   const allPormise = []
@@ -296,10 +268,10 @@ export const sendMessageReply = async (templateId, users, accessToken, params) =
 
 /**
  * 推送回执
- * @param {*} templateId 
- * @param {*} users 
- * @param {*} accessToken 
- * @param {*} params 
+ * @param {*} templateId
+ * @param {*} users
+ * @param {*} accessToken
+ * @param {*} params
  */
 export const callbackReply = async (templateId, users, accessToken, params) => {
   users.forEach(async user => {
