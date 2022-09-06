@@ -18,15 +18,15 @@ const main = async () => {
     // 获取每日天气
     const {
         // 天气
-        weather,
+        wea: weather,
         // 最高温度
-        temp: maxTemperature,
+        tem_day: maxTemperature,
         // 最低温度
-        tempn: minTemperature,
+        tem_night: minTemperature,
         // 风向
-        wd: windDirection,
+        win: windDirection,
         // 风力等级
-        ws: windScale
+        win_speed: windScale
     } = await getWeather(province, city, timestamp)
     // 获取金山词霸每日一句
     const { content: noteEn, note: noteCh} = await getCIBA()

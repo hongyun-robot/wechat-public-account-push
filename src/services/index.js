@@ -36,34 +36,36 @@ export const getAccessToken = async () => {
  * 获取天气情况
  * @param {*} province 省份
  * @param {*} city 城市
- * @param timestamp 时间戳
+ * @param index 获取第几天天气，默认当天 0 <= index <= 6
  */
-export const getWeather = async (province, city, timestamp) => {
+export const getWeather = async (province, city, index = 0) => {
+  if (index > 6) index = 6
+  if (index < 0) index = 0
+
   if (!CITY_INFO[province] || !CITY_INFO[province][city] || !CITY_INFO[province][city]["AREAID"]) {
     console.error('配置文件中找不到相应的省份或城市')
     return null
   }
-  const address = CITY_INFO[province][city]["AREAID"]
+  const cityid = CITY_INFO[province][city]["AREAID"]
 
-  const url = `http://d1.weather.com.cn/dingzhi/${address}.html?_=${timestamp || dayjs().valueOf()}`
-  console.log(url)
+  const url = 'https://v0.yiketianqi.com/free/week';
+  const appid = 34186143;
+  const appsecret = '9wJ3Opnq';
 
   const res = await axios.get(url, {
-    headers: {
-      "Referer": `http://www.weather.com.cn/weather1d/${address}.shtml`,
-      'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36`
+    params: {
+      appid,
+      appsecret,
+      cityid
     }
   }).catch(err => err)
 
   try {
     if (res.status === 200 && res.data) {
-      const temp = res.data.split(";")[0].split("=")
-      const weatherStr = temp[temp.length - 1]
-      const weather = JSON.parse(weatherStr)
-      if (weather.weatherinfo) {
-        return weather.weatherinfo
-      } else {
-        throw new Error('天气情况: 找不到weatherinfo属性, 获取失败')
+      try {
+        return res.data.data[index]
+      } catch (e) {
+        throw new Error('获取天气信息失败')
       }
     } else {
       throw new Error(res)

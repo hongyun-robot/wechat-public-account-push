@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import festivalsArr from './getLastTwoMonthsHolidays.js'
 
 export const config = {
     /**
@@ -20,7 +20,7 @@ export const config = {
     // 接收公众号消息的微信号，如果有多个，需要在[]里用英文逗号间隔，例如
 
     USERS: [
-      {name: '🌙', id: "oDWna6VY1FwGPPRiqbgdKC6XnXnc"},
+      // {name: '🌙', id: "oDWna6VY1FwGPPRiqbgdKC6XnXnc"},
       {name: '🇿 🇭 🇾', id: "oDWna6SCSmmZ3KOdDl8JweAS2_3k"},
     ],
     // 接收成功回调消息的微信号，（一般来说只填自己的微信号, name填不填无所谓）
@@ -39,7 +39,7 @@ export const config = {
     // 所在城市
     CITY: "南京",
     // 所需日期， 不传默认当天
-    TIMESTAMP: dayjs().hour(9).minute(0).second(0).millisecond(0).add(1, 'day').valueOf(),
+    TIMESTAMP: 1,
 
     /** 重要节日相关 */
 
@@ -48,9 +48,8 @@ export const config = {
     // 生日时，name填写想要展示的名字，你可以填“美丽可爱亲亲老婆”
     // 节日时，name填写相应展示的节日，你可以填“被搭讪纪念日”
     FESTIVALS: [
-      {"type": "生日", "name": "女朋友", "year": "2001", "date": "01-01"},
-      {"type": "节日", "name": "国庆节", "year": new Date().getFullYear(), "date": "10-01"},
-      {"type": "节日", "name": "中秋", "year": new Date().getFullYear(), "date": "09-10"},
+      {"type": "生日", "name": "美丽可爱小阿雪", "year": "2001", "date": "01-01"},
+      ...festivalsArr
     ],
     // 限制重要节日的展示条目, 需要填写数字;
     // 如果为3, 则仅展示“将要到达” 的3个重要节日提醒，剩下的将被忽略
